@@ -1,0 +1,183 @@
+CREATE TABLE `correcionprimerexamen`.`inquilino` (
+  `identificacion` INT NOT NULL,
+  `nombre` VARCHAR(45) NOT NULL,
+  `apellidos` VARCHAR(45) NOT NULL,
+  `correo` VARCHAR(45) NOT NULL,
+  `direccion` VARCHAR(45) NOT NULL,
+  `telefono` VARCHAR(45) NOT NULL,
+  `genero` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`identificacion`));
+
+
+CREATE TABLE `correcionprimerexamen`.`propiedad` (
+  `codigo` INT NOT NULL,
+  `nombre` VARCHAR(45) NOT NULL,
+  `valor` INT NOT NULL,
+  `direccion` VARCHAR(45) NOT NULL,
+  `residencial` VARCHAR(45) NOT NULL,
+  `numerocasa` INT NOT NULL,
+  `patio` TINYINT NOT NULL,
+  `cantidadhabitaciones` INT NOT NULL,
+  `nombreinquilino` VARCHAR(45) NULL,
+  `disponible` TINYINT NOT NULL,
+  PRIMARY KEY (`codigo`));
+
+
+CREATE TABLE `correcionprimerexamen`.`contratoalquiler` (
+  `codigo` INT NOT NULL,
+  `identificacioninquilino` INT NOT NULL,
+  `codigopropiedad` INT NOT NULL,
+  `fechainiciovigencia` DATETIME NOT NULL,
+  `duracioncontrato` INT NOT NULL,
+  `fechafinalcontrato` DATETIME NOT NULL,
+  `montoalquiler` INT NOT NULL,
+  `porcentajeanual` INT NOT NULL,
+  `moneda` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`codigo`),
+FOREIGN KEY (identificacioninquilino) REFERENCES inquilino(identificacion),
+FOREIGN KEY (codigopropiedad) REFERENCES propiedad(codigo)
+);
+
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `deletePropiedad`(
+pCodigo int)
+BEGIN
+delete from  propiedad where codigo = pCodigo;
+END
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertPropiedad`(
+pCodigo int,
+pNombre varchar(45),
+pValor int,
+pDireccion varchar(45),
+pResidencial varchar(45),
+pNumerocasa int,
+pPatio tinyint,
+pCantidadhabitaciones int,
+pDisponible tinyint
+)
+BEGIN
+insert into propiedad(codigo,nombre,valor,direccion,residencial,numerocasa,patio,cantidadhabitaciones,disponible)
+values (pCodigo,pNombre,pValor,pDireccion,pResidencial,pNumerocasa,pPatio,pCantidadhabitaciones,pDisponible);
+END
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listarPropiedades`()
+BEGIN
+SELECT codigo,nombre,valor,direccion,residencial,numerocasa,patio,cantidadhabitaciones,disponible,nombreinquilino from propiedad;
+END
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `searchPropiedad`(
+pCodigo int)
+BEGIN
+SELECT codigo,nombre,valor,direccion,residencial,numerocasa,patio,cantidadhabitaciones,disponible,nombreinquilino from propiedad where codigo = pcodigo;
+END
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `updatePropiedad`(
+pCodigo int,
+pNombre varchar(45),
+pValor int,
+pDireccion varchar(45),
+pResidencial varchar(45),
+pNumerocasa int,
+pPatio tinyint,
+pCantidadhabitaciones int,
+pDisponible tinyint
+)
+BEGIN
+update propiedad set nombre = pNombre, valor= pValor, direccion= pDireccion, residencial=pResidencial, numerocasa= pNumerocasa, patio=pPatio, cantidadhabitaciones = pCantidadhabitaciones, disponible= pDisponible
+where codigo = pCodigo;
+END
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `deleteInquilino`(
+pIdentificacion int)
+BEGIN
+delete from  inquilino where identificacion = pIdentificacion;
+END
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertInquilino`(
+pIdentificacion int,
+pNombre varchar(45),
+pApellidos varchar(45),
+pCorreo varchar(45),
+pDireccion varchar(45),
+pTelefono varchar(45),
+pGenero varchar(45)
+)
+BEGIN
+insert into inquilino(identificacion, nombre, apellidos, correo, direccion, telefono, genero)
+values (pIdentificacion, pNombre, pApellidos, pCorreo, pDireccion, pTelefono, pGenero);
+END
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listarInquilinos`()
+BEGIN
+SELECT identificacion, nombre, apellidos, correo, direccion, telefono, genero from inquilino;
+END
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `searchInquilino`(
+pIdentificacion int)
+BEGIN
+SELECT identificacion, nombre, apellidos, correo, direccion, telefono, genero from inquilino where pIdentificacion = identificacion;
+END
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `updateInquilino`(
+pIdentificacion int,
+pNombre varchar(45),
+pApellidos varchar(45),
+pCorreo varchar(45),
+pDireccion varchar(45),
+pTelefono varchar(45),
+pGenero varchar(45)
+)
+BEGIN
+update inquilino set nombre = pNombre, apellidos= pApellidos, correo = pCorreo, direccion = pDireccion, telefono = pTelefono, genero = pGenero
+where identificacion = pIdentificacion;
+END
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `deleteContratoAlquiler`(
+pCodigo int)
+BEGIN
+delete from  contratoalquiler where codigo = pCodigo;
+END
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertContratoAlquiler`(
+pCodigo int,
+pIdentificacionInquilino int,
+pCodigoPropiedad int,
+pFechaInicioVigencia datetime,
+pDuracionContrato int,
+pFechaFinalContrato datetime,
+pMontoAlquiler int,
+pPorcentajeAnual int,
+pMoneda varchar(45)
+)
+BEGIN
+insert into contratoalquiler(codigo, identificacioninquilino, codigopropiedad,fechainiciovigencia,duracioncontrato,fechafinalcontrato,montoalquiler,porcentajeanual,moneda)
+values (pCodigo, pIdentificacioninquilino, pCodigopropiedad,pFechainiciovigencia,pDuracioncontrato,pFechafinalcontrato,pMontoalquiler,pPorcentajeanual,pMoneda);
+END
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listarContratosAlquiler`()
+BEGIN
+SELECT codigo, identificacioninquilino, codigopropiedad, fechainiciovigencia, duracioncontrato, fechafinalcontrato, montoalquiler, porcentajeanual, moneda from contratoalquiler;
+END
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `searchContratoAlquiler`(
+pCodigo int)
+BEGIN
+SELECT codigo, identificacioninquilino, codigopropiedad, fechainiciovigencia, duracioncontrato, fechafinalcontrato, montoalquiler, porcentajeanual, moneda from contratoalquiler where pCodigo = codigo;
+END
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `updateContratoAlquiler`(
+pCodigo int,
+pIdentificacionInquilino int,
+pCodigoPropiedad int,
+pFechaInicioVigencia datetime,
+pDuracionContrato int,
+pFechaFinalContrato datetime,
+pMontoAlquiler int,
+pPorcentajeAnual int,
+pMoneda varchar(45)
+)
+BEGIN
+update contratoalquiler set codigo = pCodigo, identificacioninquilino = pIdentificacionInquilino, codigopropiedad = pCodigoPropiedad, fechainiciovigencia = pFechaInicioVigencia, duracioncontrato = pDuracionContrato, fechafinalcontrato = pFechaFinalContrato, montoalquiler = pMontoAlquiler, porcentajeanual = pPorcentajeAnual, moneda = pMoneda
+where codigo = pCodigo;
+END
